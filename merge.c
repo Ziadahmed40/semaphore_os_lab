@@ -1,5 +1,7 @@
 #include "pthread.h"
 #include "stdio.h"
+#include "malloc.h"
+#include <unistd.h>
 struct input{
     int l;
     int r;
@@ -72,7 +74,27 @@ void *mergeSort(void* arguments)
 }
 int main()
 {
-    int arr[] = { 12, 11, 13, 5, 6, 7 };
+    FILE *fp = fopen("C:\\Users\\zeyad\\Desktop\\untitled8\\input-sort.txt", "r");
+        if (!fp) {
+            fprintf(stderr, "Error opening file\n");
+            return 1;
+        }
+        int n_elements;
+        if (fscanf(fp, "%d", &n_elements) != 1) {
+            fprintf(stderr, "Error reading number of elements\n");
+            fclose(fp);
+            return 1;
+        }
+        int arr[n_elements];
+        // Read the elements of the array
+        for (int i = 0; i < n_elements; i++) {
+            if (fscanf(fp, "%d", &arr[i]) != 1) {
+                fprintf(stderr, "Error reading element %d\n", i + 1);
+                fclose(fp);
+                return 1;
+            }
+        }
+        fclose(fp);
     int arr_size = sizeof(arr) / sizeof(arr[0]);
     printf("Given array is \n");
     printArray(arr, arr_size);
