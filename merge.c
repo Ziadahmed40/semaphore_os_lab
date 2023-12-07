@@ -40,30 +40,35 @@ void merge(int arr[], int l, int m, int r)
         k++;
     }
 }
-void *mergeSort(void* arguments)
-{
-    struct input *args = arguments;
-    if (args->l < args->r) {
-        int m = args->l + (args->r - args->l) / 2;
-        pthread_t left_t ;
-        struct input *left =args;
-        left->r=m;
-        pthread_t right_t ;
-        struct input *right =args;
-        right->l=m+1;
-        pthread_create(&left_t,NULL,mergeSort,(void *)&left);
-        pthread_create(&right_t,NULL,mergeSort,(void *)&right);
-        pthread_join(left_t,NULL);
-        pthread_join(right_t,NULL);
-        merge(args->arr, args->l, m, args->r);
-    }
-}
+
 void printArray(int A[], int size)
 {
     int i;
     for (i = 0; i < size; i++)
         printf("%d ", A[i]);
     printf("\n");
+}
+void *mergeSort(void* arguments)
+{
+    struct input *args = arguments;
+    if (args->l < args->r) {
+        int m = args->l + (args->r - args->l) / 2;
+        pthread_t left_t ;
+        struct input left ;
+        left.arr=args->arr;
+        left.l=args->l;
+        left.r=m;
+        pthread_t right_t ;
+        struct input right ;
+        right.arr=args->arr;
+        right.l=m+1;
+        right.r=args->r;
+        pthread_create(&left_t,NULL,mergeSort,(void *)&left);
+        pthread_create(&right_t,NULL,mergeSort,(void *)&right);
+        pthread_join(left_t,NULL);
+        pthread_join(right_t,NULL);
+        merge(args->arr, args->l, m, args->r);
+    }
 }
 int main()
 {
@@ -77,7 +82,8 @@ int main()
     start.r=arr_size-1;
     pthread_t main;
     pthread_create(&main,NULL,mergeSort,(void *)&start);
-    printf("\nSorted array is \n");
-    printArray(arr, arr_size);
+    pthread_join(main,NULL);
+    printf("AFTER MERGE SORT\n");
+    printArray(arr,arr_size);
     return 0;
 }
