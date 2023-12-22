@@ -3,4 +3,4 @@ project(untitled8)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(untitled8 merge.c matrix.c)
+add_executable(untitled8 semaphoree.c)
